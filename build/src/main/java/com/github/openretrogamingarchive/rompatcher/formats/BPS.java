@@ -214,21 +214,44 @@ public class BPS {
                 this.next = null;
         }
     }
-    public static BPS createBPSFromFiles(MarcFile original, MarcFile modified) throws IOException {
+
+
+
+
+    public static BPS createBPSFromFiles(MarcFile original, MarcFile modified, boolean deltaMode) throws IOException {
         BPS patch=new BPS();
         patch.sourceSize = original.fileSize;
         patch.targetSize = modified.fileSize;
-        patch.actions=createBPSFromFilesDelta(original, modified);
+
+//        if(original.fileSize <= 4194304) {
+        if(deltaMode) {
+            patch.actions = createBPSFromFilesDelta(original, modified);
+        } else {
+            patch.actions = createBPSFromFilesLinear(original, modified);
+        }
+
         patch.sourceChecksum= CRC.crc32(original);
         patch.targetChecksum= CRC.crc32(modified);
         patch.patchChecksum=CRC.crc32(patch.export(), 0, true);
         return patch;
     }
 
+/* delta implementation from https://github.com/chiya/beat/blob/master/nall/beat/linear.hpp */
+public static List<BPSAction> createBPSFromFilesLinear(MarcFile original, MarcFile modified){
+        List<BPSAction> patchActions = new ArrayList<>();
 
+        /* references to match original beat code */
+        int[] sourceData= original._u8array;
+        int[] targetData= modified._u8array;
+        int sourceSize = original.fileSize;
+        int targetSize = modified.fileSize;
+        final int Granularity=1;
 
 
 
+        var targetRelativeOffset=0;
+        var outputOffset=0;
+        var targetReadLength=0;
 
 
 
@@ -244,68 +267,49 @@ public class BPS {
 
 
 
+        while(outputOffset < targetSize) {
+            var sourceLength = 0;
+            for(var n = 0; outputOffset + n < Math.min(sourceSize, targetSize); n++) {
+                if(sourceData[outputOffset + n] != targetData[outputOffset + n]) break;
+                sourceLength++;
+            }
 
+            var rleLength = 0;
+            for(var n = 1; outputOffset + n < targetSize; n++) {
+                if(targetData[outputOffset] != targetData[outputOffset + n]) break;
+                rleLength++;
+            }
 
+            if(rleLength >= 4) {
+                //write byte to repeat
+                targetReadLength++;
+                outputOffset++;
+                targetReadFlush(targetReadLength, outputOffset, targetData, patchActions); targetReadLength = 0;
 
+                //copy starting from repetition byte
+                //encode(TargetCopy | ((rleLength - 1) << 2));
+                var relativeOffset = (outputOffset - 1) - targetRelativeOffset;
+                //encode(relativeOffset << 1);
+                patchActions.add(new BPSAction(BPS_ACTION_TARGET_COPY, rleLength, null, relativeOffset));
+                outputOffset += rleLength;
+                targetRelativeOffset = outputOffset - 1;
+            } else if(sourceLength >= 4) {
+                targetReadFlush(targetReadLength, outputOffset, targetData, patchActions); targetReadLength = 0;
+                //encode(SourceRead | ((sourceLength - 1) << 2));
+                patchActions.add(new BPSAction(BPS_ACTION_SOURCE_READ, sourceLength, null, null));
+                outputOffset += sourceLength;
+            } else {
+                targetReadLength += Granularity;
+                outputOffset += Granularity;
+            }
+        }
 
+        targetReadFlush(targetReadLength, outputOffset, targetData, patchActions); targetReadLength = 0;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return patchActions;
+    }
 
     /* delta implementation from https://github.com/chiya/beat/blob/master/nall/beat/delta.hpp */
     public static List<BPSAction> createBPSFromFilesDelta(MarcFile original, MarcFile modified) throws IOException {
