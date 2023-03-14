@@ -118,6 +118,11 @@ public class MarcFile {
     public void copyToFile(MarcFile target, int offsetSource){
         copyToFile(target, offsetSource, null, null);
     }
+
+    public void copyToFile(MarcFile target, int offsetSource, Integer len){
+        copyToFile(target, offsetSource, len, null);
+    }
+
     public void copyToFile(MarcFile target, int offsetSource, Integer len, Integer offsetTarget){
         if(offsetTarget==null)
             offsetTarget=offsetSource;

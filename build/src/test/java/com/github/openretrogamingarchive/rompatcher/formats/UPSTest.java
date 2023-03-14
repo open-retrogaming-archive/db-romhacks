@@ -8,16 +8,16 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public class IPSTest {
+public class UPSTest {
     Path original = Path.of("test-data","3x3 Eyes - Juuma Houkan (Japan).sfc");
     Path modified = Path.of("test-data","3x3 Eyes - Juuma Houkan (Japan) [T-En by Atomizer_Zero v1.01].sfc");
-    Path patch = Path.of("test-data","3x3 Eyes - Juuma Houkan (Japan) [T-En by Atomizer_Zero v1.01].ips");
+    Path patch = Path.of("test-data","3x3 Eyes - Juuma Houkan (Japan) [T-En by Atomizer_Zero v1.01].ups");
 
     @Test
     public void testCreate() throws Exception {
-        IPS ips = IPS.createIPSFromFiles(new MarcFile(original), new MarcFile(modified));
-        MarcFile export = ips.export();
-        Path testPath = Path.of("test.ips");
+        UPS ups = UPS.createUPSFromFiles(new MarcFile(original), new MarcFile(modified));
+        MarcFile export = ups.export();
+        Path testPath = Path.of("test.ups");
         export.save(testPath);
 
         byte[] expected = Files.readAllBytes(patch);
@@ -27,9 +27,9 @@ public class IPSTest {
     }
     @Test
     public void testParse() throws Exception {
-        IPS ips = IPS.parseIPSFile(new MarcFile(patch));
-        MarcFile export = ips.export();
-        Path testPath = Path.of("test.ips");
+        UPS ups = UPS.parseUPSFile(new MarcFile(patch));
+        MarcFile export = ups.export();
+        Path testPath = Path.of("test.ups");
         export.save(testPath);
 
         byte[] expected = Files.readAllBytes(patch);
@@ -40,9 +40,9 @@ public class IPSTest {
 
     @Test
     public void testApply() throws Exception {
-        IPS ips = IPS.parseIPSFile(new MarcFile(patch));
+        UPS ups = UPS.parseUPSFile(new MarcFile(patch));
 
-        MarcFile actualModified = ips.apply(new MarcFile(original));
+        MarcFile actualModified = ups.apply(new MarcFile(original), true);
         Path actualModifiedPath = Path.of("modified");
         actualModified.save(actualModifiedPath);
 

@@ -1,3 +1,4 @@
+/* Apache 2 License, Copyright (c) 2023 Juan Fuentes, based on Rom Patcher JS by Marc Robledo */
 package com.github.openretrogamingarchive.rompatcher.formats;
 
 import com.github.openretrogamingarchive.rompatcher.MarcFile;
@@ -24,7 +25,6 @@ public class IPS {
     public void addRLERecord(int o,int l,int b){
         this.records.add(new IpsRecord(o, null, IPS_RECORD_RLE, l, null, b));
     }
-
 
 
 
