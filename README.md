@@ -58,6 +58,16 @@ When several romhacks come from the same 'romhack-bundle' a symlink SHOULD be us
 - 1 Commit -> 1 Romhack
 - Commit Message -> Romhack name
 
+## Current Goals
+- Write tool to create roms from database
+- Write tool to create dat from database
+- Porting already curated hacks found at https://www.romhackdb.com/
+- Porting already curated hacks found at https://archive.org/details/En-ROMs
+- Porting already curated hacks found at https://archive.org/details/super-famicom-enhanced-colors
+- Porting already curated hacks found at https://archive.org/details/sfc-speedhacks
+- Porting already curated hacks found at https://archive.org/details/SegaMD-Enhanced-ROMs
+- Long Term Goal: Porting hacks from comunity sites
+
 ## Why a Git repository?
 Initially it seems like a misuse of Git since the bulk of the repository is going to be binary data coming from patches.
 
@@ -71,4 +81,4 @@ Most romhacks:
 - Come from the first four console generations.
 - And are created from very small patch files.
 
-It is necessary to acknoledge that to handle romhacks from fifth console generation onwards some extensions will be needed.
+It is to acknoledge that to handle romhacks from fifth console generation onwards some extensions will be needed.
