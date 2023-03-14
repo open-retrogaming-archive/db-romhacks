@@ -51,7 +51,7 @@ romhack.xml Example:
 - status: One of the two 'Fully Playable' or 'Incomplete'.
 
 ## Optional Patches
-Some romhacks contain a myriad of optional patches, this projects prefers to normalize such options under a few curated ones released as different romhacks under the same game.
+Some romhacks contain a myriad of optional patches. This project prefers to normalize such options under a few curated ones released as different romhacks under the same game.
 
 ## Providing Changes to the repository
 - 1 Commit -> 1 Romhack
