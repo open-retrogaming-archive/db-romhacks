@@ -1,12 +1,14 @@
-/* MIT License, Copyright (c) 2023 Juan Fuentes, based on Rom Patcher JS by Marc Robledo */
+/* Apache 2 License, Copyright (c) 2023 Juan Fuentes, based on Rom Patcher JS by Marc Robledo */
 package com.github.openretrogamingarchive.rompatcher.formats;
 
 import com.github.openretrogamingarchive.rompatcher.MarcFile;
-import com.github.openretrogamingarchive.rompatcher.CRC;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.openretrogamingarchive.rompatcher.CRC.crc32;
+
 public class BPS {
     private static final String BPS_MAGIC = "BPS1";
     private static final int BPS_ACTION_SOURCE_READ=0;
@@ -30,6 +32,7 @@ public class BPS {
         this.patchChecksum = 0;
     }
 
+    public boolean isValid(MarcFile file){return this.sourceChecksum==crc32(file);}
 
 
 
@@ -70,69 +73,70 @@ public class BPS {
 
 
 
+    public static BPS parseBPSFile(MarcFile file){
+        //file.readVLV=BPS_readVLV;
 
+        file.littleEndian=true;
+        var patch=new BPS();
 
 
+        file.seek(4); //skip BPS1
 
+        patch.sourceSize=BPS_readVLV(file);
+        patch.targetSize=BPS_readVLV(file);
 
+        int metaDataLength=BPS_readVLV(file);
+        if(metaDataLength > 0){
+            patch.metaData=file.readString(metaDataLength);
+        }
 
 
+        int endActionsOffset=file.fileSize-12;
+        while(file.offset<endActionsOffset){
+            int data=BPS_readVLV(file);
+            BPSAction action = new BPSAction( data & 3, (data >> 2)+1, null, null);
 
+            if(action.type==BPS_ACTION_TARGET_READ){
+                action.bytes=file.readBytes(action.length);
 
+            }else if(action.type==BPS_ACTION_SOURCE_COPY || action.type==BPS_ACTION_TARGET_COPY){
+                int relativeOffset=BPS_readVLV(file);
+                action.relativeOffset=((relativeOffset & 1) > 0? -1 : +1) * (relativeOffset >> 1);
+            }
 
+            patch.actions.add(action);
+        }
 
+        //file.seek(endActionsOffset);
+        patch.sourceChecksum=file.readU32();
+        patch.targetChecksum=file.readU32();
+        patch.patchChecksum=file.readU32();
 
+        if(patch.patchChecksum!=crc32(file, 0, true)){
+            throw new Error("error_crc_patch");
+        }
 
 
+        return patch;
+    }
 
 
 
+    private static int BPS_readVLV(MarcFile file){
+        int data=0, shift=1;
+        while(true){
+            int x = file.readU8();
+            data += (x & 0x7f) * shift;
+            if((x & 0x80) > 0)
+                break;
+            shift <<= 7;
+            data += shift;
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private static void BPS_writeVLV(MarcFile file, int data) throws IOException {
+        file._lastRead=data;
+        return data;
+    }
+    private static void BPS_writeVLV(MarcFile file, int data){
         while(true){
             int x = data & 0x7f;
             data >>= 7;
@@ -230,9 +234,9 @@ public class BPS {
             patch.actions = createBPSFromFilesLinear(original, modified);
         }
 
-        patch.sourceChecksum= CRC.crc32(original);
-        patch.targetChecksum= CRC.crc32(modified);
-        patch.patchChecksum=CRC.crc32(patch.export(), 0, true);
+        patch.sourceChecksum= crc32(original);
+        patch.targetChecksum= crc32(modified);
+        patch.patchChecksum= crc32(patch.export(), 0, true);
         return patch;
     }
 
@@ -312,7 +316,7 @@ public static List<BPSAction> createBPSFromFilesLinear(MarcFile original, MarcFi
     }
 
     /* delta implementation from https://github.com/chiya/beat/blob/master/nall/beat/delta.hpp */
-    public static List<BPSAction> createBPSFromFilesDelta(MarcFile original, MarcFile modified) throws IOException {
+    public static List<BPSAction> createBPSFromFilesDelta(MarcFile original, MarcFile modified) {
         List<BPSAction> patchActions = new ArrayList<>();
 
 

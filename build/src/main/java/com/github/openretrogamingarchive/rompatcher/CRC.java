@@ -1,4 +1,4 @@
-/* MIT License, Copyright (c) 2023 Juan Fuentes, based on Rom Patcher JS by Marc Robledo */
+/* Apache 2 License, Copyright (c) 2023 Juan Fuentes, based on Rom Patcher JS by Marc Robledo */
 package com.github.openretrogamingarchive.rompatcher;
 
 import java.util.Arrays;

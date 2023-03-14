@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'org.example'
+group 'com.github.openretrogamingarchive.rompatcher'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -16,4 +16,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }

@@ -1,13 +1,15 @@
-/* MIT License, Copyright (c) 2023 Juan Fuentes, based on Rom Patcher JS by Marc Robledo */
+/* Apache 2 License, Copyright (c) 2023 Juan Fuentes, based on Rom Patcher JS by Marc Robledo */
 package com.github.openretrogamingarchive.rompatcher;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 public class MarcFile {
     public boolean littleEndian=false;
     public int offset=0;
+    public Object _lastRead = null;
     public int[] _u8array;
     public int fileSize;
 
@@ -84,16 +86,15 @@ public class MarcFile {
 
 
 
-
-
-
-
-
-
-
-
-
-
+    public void seek(int offset){
+        this.offset=offset;
+    }
+    public void skip(int nBytes){
+        this.offset+=nBytes;
+    }
+    public boolean isEOF(){
+        return !(this.offset<this.fileSize);
+    }
 
 
 
@@ -147,18 +148,59 @@ public class MarcFile {
 
 
 
+    public int readU8() {
+        this._lastRead=this._u8array[this.offset];
+
+        this.offset++;
+        return (int) this._lastRead;
+    }
+    public int readU16() {
+        if(this.littleEndian)
+            this._lastRead=this._u8array[this.offset] + (this._u8array[this.offset+1] << 8);
+        else
+            this._lastRead=(this._u8array[this.offset] << 8) + this._u8array[this.offset+1];
+
+        this.offset+=2;
+        return (int) this._lastRead >>> 0;
+    }
+    public int readU24() {
+        if(this.littleEndian)
+            this._lastRead=this._u8array[this.offset] + (this._u8array[this.offset+1] << 8) + (this._u8array[this.offset+2] << 16);
+        else
+            this._lastRead=(this._u8array[this.offset] << 16) + (this._u8array[this.offset+1] << 8) + this._u8array[this.offset+2];
+
+        this.offset+=3;
+        return (int) this._lastRead >>> 0;
+    }
+    public int readU32() {
+        if(this.littleEndian)
+            this._lastRead=this._u8array[this.offset] + (this._u8array[this.offset+1] << 8) + (this._u8array[this.offset+2] << 16) + (this._u8array[this.offset+3] << 24);
+        else
+            this._lastRead=(this._u8array[this.offset] << 24) + (this._u8array[this.offset+1] << 16) + (this._u8array[this.offset+2] << 8) + this._u8array[this.offset+3];
+
+        this.offset+=4;
+        return (int) this._lastRead >>> 0;
+    }
 
 
+    public List<Integer> readBytes(int len){
+        this._lastRead=new ArrayList<Integer>(len);
+        for(var i=0; i<len; i++){
+            ((ArrayList<Integer>) this._lastRead).add(this._u8array[this.offset+i]);
+        }
 
+        this.offset+=len;
+        return (ArrayList<Integer>) this._lastRead;
+    }
 
+    public String readString(int len){
+        this._lastRead="";
+        for(var i=0;i<len && (this.offset+i)<this.fileSize && this._u8array[this.offset+i]>0;i++)
+            this._lastRead=(String)this._lastRead+(char)(this._u8array[this.offset+i]);
 
-
-
-
-
-
-
-
+        this.offset+=len;
+        return (String) this._lastRead;
+    }
 
 
 
