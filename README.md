@@ -16,17 +16,17 @@ There is two main categories 'hacks' and 'translations'
 System Name
     |- Game Name / Rom Name:
         |- hacks:
-            |- Romhack Name
-                |- romhack.bps
-                |- romhack.xml
-                |- romhack-docs:
+            |- Name: As indicated on metadata
+                |- romhack.bps: Custom patch that ensures compatibilty with a well known rom
+                |- romhack.xml: Metadata
+                |- romhack-bundle: Originaly distributed files
                     |- ...
         |- translations:
             | - two-letter-iso-language-code: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
-                |- Translation Name
+                |- Name
                     |- romhack.bps
                     |- romhack.xml
-                    |- romhack-docs:
+                    |- romhack-bundle
                         |- ...
 ```
 
@@ -51,7 +51,9 @@ romhack.xml Example:
 - status: One of the two 'Fully Playable' or 'Incomplete'.
 
 ## Optional Patches
-Some romhacks contain a myriad of optional patches. This project prefers to normalize such options under a few curated ones released as different romhacks under the same game.
+Some romhacks contain a myriad of optional patches.
+This project prefers to normalize such options under a few curated ones released as different romhacks under the same game.
+When several romhacks come from the same 'romhack-bundle' a symlink SHOULD be used.
 
 ## Providing Changes to the repository
 - 1 Commit -> 1 Romhack
