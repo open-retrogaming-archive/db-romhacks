@@ -8,6 +8,7 @@ This is mainly an archival project, it CANNOT replace the original community sit
 It 'normalizes' the original patches distributions into a structure that is easier to process automatically to:
 - Build romhacks collections given that the user has a copy of the original game rom.
 - Generate DAT files to use in rom managers to validate collections.
+- Provide BPS patches even when originaly where distributed using a different format.
 
 ## Directories
 There is two main categories 'hacks' and 'translations'
@@ -68,6 +69,20 @@ When several romhacks come from the same 'romhack-bundle' a symlink SHOULD be us
 - Porting already curated hacks found at https://archive.org/details/SegaMD-Enhanced-ROMs
 - Long Term Goal: Porting hacks from comunity sites
 
+## Tools
+
+## Documentation
+There is many patch formats, some only used by certain comunities to patch certain games, other more widely used.
+
+Today IPS and BPS patch formats are considered De facto standards. Hence the focus on these.
+
+|     |     |     |     |
+| --- | --- | --- | --- |
+| **Format** | **Creation Date** | **Author** | **Description** |
+| [IPS](/doc/ips/ips.md) | >= 1993   | Unknown | Original patch format, used to this day. Mainly when input validation is better avoided. |
+| [UPS](/doc/ups1/ups-spec.pdf) | 2008   | Near | Designed to replace IPS. Provides validation for input and output. |
+| [BPS](/doc/bps1/bps_spec.md) | 2012   | Near | Designed to replace IPS. Provides validation for input, output and patch. |
+
 ## Why a Git repository?
 Initially it seems like a misuse of Git since the bulk of the repository is going to be binary data coming from patches.
 
@@ -79,6 +94,6 @@ In this case Git provides instantly the infrastructure needed to bootstrap the p
 
 Most romhacks:
 - Come from the first four console generations.
-- And are created from very small patch files.
+- Are created from very small patch files.
 
 It is to acknoledge that to handle romhacks from fifth console generation onwards some extensions will be needed.
