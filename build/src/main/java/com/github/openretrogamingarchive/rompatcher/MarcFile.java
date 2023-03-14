@@ -94,26 +94,30 @@ public class MarcFile {
         return !(this.offset<this.fileSize);
     }
 
+    public MarcFile slice(int offset, Integer len){
+        if(len==null||len==0)
+            len=this.fileSize-offset;
+
+        MarcFile newFile;
+
+//        if(typeof this._u8array.buffer.slice!=='undefined'){
+//            newFile=new MarcFile(0);
+//            newFile.fileSize=len;
+//            newFile._u8array=new Uint8Array(this._u8array.buffer.slice(offset, offset+len));
+//        }else{
+            newFile=new MarcFile(len);
+            this.copyToFile(newFile, offset, len, 0);
+//        }
+//        newFile.fileName=this.fileName;
+//        newFile.fileType=this.fileType;
+        newFile.littleEndian=this.littleEndian;
+        return newFile;
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void copyToFile(MarcFile target, int offsetSource){
+        copyToFile(target, offsetSource, null, null);
+    }
     public void copyToFile(MarcFile target, int offsetSource, Integer len, Integer offsetTarget){
         if(offsetTarget==null)
             offsetTarget=offsetSource;
@@ -206,30 +210,30 @@ public class MarcFile {
 
         this.offset++;
     }
+    public void writeU16(int u16){
+        if(this.littleEndian){
+            this._u8array[this.offset]=u16 & 0xff;
+            this._u8array[this.offset+1]=u16 >> 8;
+        }else{
+            this._u8array[this.offset]=u16 >> 8;
+            this._u8array[this.offset+1]=u16 & 0xff;
+        }
 
+        this.offset+=2;
+    }
+    public void writeU24(int u24){
+        if(this.littleEndian){
+            this._u8array[this.offset]=u24 & 0x0000ff;
+            this._u8array[this.offset+1]=(u24 & 0x00ff00) >> 8;
+            this._u8array[this.offset+2]=(u24 & 0xff0000) >> 16;
+        }else{
+            this._u8array[this.offset]=(u24 & 0xff0000) >> 16;
+            this._u8array[this.offset+1]=(u24 & 0x00ff00) >> 8;
+            this._u8array[this.offset+2]=u24 & 0x0000ff;
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        this.offset+=3;
+    }
     public void writeU32(long u32){
         if(this.littleEndian){
             this._u8array[this.offset]= (int) (u32 & 0x000000ff);

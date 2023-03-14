@@ -28,7 +28,7 @@ public class BPSTest {
         assertArrayEquals(expected, actual);
     }
     @Test
-    public void testLoadLinear() throws Exception {
+    public void testParseLinear() throws Exception {
         BPS bps = BPS.parseBPSFile(new MarcFile(linearPatch));
         MarcFile export = bps.export();
         Path testPath = Path.of("test.bps");
@@ -39,7 +39,6 @@ public class BPSTest {
 
         assertArrayEquals(expected, actual);
     }
-
     @Test
     public void testApplyLinear() throws Exception {
         BPS bps = BPS.parseBPSFile(new MarcFile(linearPatch));
@@ -67,7 +66,7 @@ public class BPSTest {
         assertArrayEquals(expected, actual);
     }
     @Test
-    public void testLoadDelta() throws Exception {
+    public void testParseDelta() throws Exception {
         BPS bps = BPS.parseBPSFile(new MarcFile(deltaPatch));
         MarcFile export = bps.export();
         Path testPath = Path.of("test.bps");
