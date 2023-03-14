@@ -33,19 +33,18 @@ System Name
 ## Files
 romhack.xml Example:
 ```
-  <romhack>
-    <name>Bishoujo Senshi Sailor Moon - Another Story</name>
+<romhack>
+    <name>3x3 Eyes - Juuma Houkan (Japan) [T-En by Atomizer_Zero v1.01]</name>
     <patchtype>bps</patchtype>
-    <baseCRC>02A442B8</baseCRC>
-    <patchCRC>2144DF1C</patchCRC>
-    <finalCRC>EEC0F601</finalCRC>
-    <author>Bishoujo Senshi Translations</author>
-    <url>https://www.romhacking.net/translations/4654/</url>
-    <version>2.05</version>
-    <releasedate>2020-06-05</releasedate>
+    <baseCRC>ad4ad163</baseCRC>
+    <patchCRC>2144df1c</patchCRC>
+    <finalCRC>b455b7a4</finalCRC>
+    <author>Atomizer_Zero</author>
+    <url>https://www.romhacking.net/translations/2835/</url>
+    <version>1.01</version>
+    <releasedate>2017-02-02</releasedate>
     <status>Fully Playable</status>
-    <notes>This is a complete English relocalization of Bishoujo Senshi Sailor Moon - Another Story, an RPG for the Super Famicom. Featured are several fixes to issues and bugs in the original game.</notes>
-  </romhack>
+</romhack>
 ```
 - releasedate: SHOULD follow the pattern YYYY-MM-DD.
 - status: One of the two 'Fully Playable' or 'Incomplete'.
