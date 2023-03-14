@@ -57,3 +57,18 @@ When several romhacks come from the same 'romhack-bundle' a symlink SHOULD be us
 ## Providing Changes to the repository
 - 1 Commit -> 1 Romhack
 - Commit Message -> Romhack name
+
+## Why a Git repository?
+Initially it seems like a misuse of Git since the bulk of the repository is going to be binary data coming from patches.
+
+Git is replacing:
+- A website used to share content.
+- An application used to submit content.
+
+In this case Git provides instantly the infrastructure needed to bootstrap the project.
+
+Most romhacks:
+- Come from the first four console generations.
+- And are created from very small patch files.
+
+It is necessary to acknoledge that to handle romhacks from fifth console generation onwards some extensions will be needed.
