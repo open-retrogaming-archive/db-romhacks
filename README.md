@@ -33,18 +33,19 @@ System Name
 ## Files
 romhack.xml Example:
 ```
-  <game name="Bishoujo Senshi Sailor Moon - Another Story (Japan)">
+  <romhack>
+    <name>Bishoujo Senshi Sailor Moon - Another Story</name>
     <patchtype>bps</patchtype>
     <baseCRC>02A442B8</baseCRC>
     <patchCRC>2144DF1C</patchCRC>
     <finalCRC>EEC0F601</finalCRC>
+    <shortauthor>Bishoujo Senshi Translations</shortauthor>
     <authors>Bishoujo Senshi Translations, mteam (mziab, vivify93, FuSoYa, Moose M., Lina`chan, Nuku-nuku, Cecil Stormclaw)</authors>
-    <shortauthor>Bishoujo Senshi</shortauthor>
     <version>2.05</version>
     <releasedate>2020-06-05</releasedate>
     <status>Fully Playable</status>
     <notes>This is a complete English relocalization of Bishoujo Senshi Sailor Moon - Another Story, an RPG for the Super Famicom. Featured are several fixes to issues and bugs in the original game.</notes>
-  </game>
+  </romhack>
 ```
 
 ## Optional Patches
