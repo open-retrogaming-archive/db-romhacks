@@ -51,5 +51,5 @@ romhack.xml Example:
 Some romhacks contain a myriad of optional patches, this projects prefers to normalize such options under a few curated ones released as different romhacks under the same game.
 
 ## Providing Changes to the repository
-1 Commit -> 1 Romhack
-Commit Message -> Romhack name
+- 1 Commit -> 1 Romhack
+- Commit Message -> Romhack name
