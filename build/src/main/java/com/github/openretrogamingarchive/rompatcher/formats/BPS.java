@@ -2,7 +2,6 @@
 package com.github.openretrogamingarchive.rompatcher.formats;
 
 import com.github.openretrogamingarchive.rompatcher.MarcFile;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,66 +14,67 @@ public class BPS {
     private static final int  BPS_ACTION_TARGET_READ=1;
     private static final int  BPS_ACTION_SOURCE_COPY=2;
     private static final int  BPS_ACTION_TARGET_COPY=3;
-    public int sourceSize;
-    public int targetSize;
+    public int sourceSize, targetSize;
     public String metaData;
     public List<BPSAction> actions;
-    public long sourceChecksum;
-    public long targetChecksum;
-    public long patchChecksum;
+    public long sourceChecksum, targetChecksum, patchChecksum;
     private BPS() {
-        this.sourceSize = 0;
-        this.targetSize = 0;
+        this.sourceSize = 0; this.targetSize = 0;
         this.metaData = "";
         this.actions = new ArrayList<>();
-        this.sourceChecksum = 0;
-        this.targetChecksum = 0;
-        this.patchChecksum = 0;
+        this.sourceChecksum = 0; this.targetChecksum = 0; this.patchChecksum = 0;
     }
-
-    public boolean isValid(MarcFile file){return this.sourceChecksum==crc32(file);}
-
-
-
-
-
+    public boolean validateSource(MarcFile romFile){return this.sourceChecksum==crc32(romFile);}
+    public MarcFile apply(MarcFile romFile, boolean validate){
+        if(validate && !this.validateSource(romFile)){
+            throw new Error("error_crc_input");
+        }
 
 
+        MarcFile tempFile=new MarcFile(this.targetSize);
 
 
+        //patch
+        var sourceRelativeOffset=0;
+        var targetRelativeOffset=0;
+        for(var i=0; i<this.actions.size(); i++){
+            BPSAction action= this.actions.get(i);
 
+            if(action.type==BPS_ACTION_SOURCE_READ){
+                romFile.copyToFile(tempFile, tempFile.offset, action.length, null);
+                tempFile.skip(action.length);
 
+            }else if(action.type==BPS_ACTION_TARGET_READ){
+                tempFile.writeBytes(action.bytes);
 
+            }else if(action.type==BPS_ACTION_SOURCE_COPY){
+                sourceRelativeOffset+=action.relativeOffset;
+                var actionLength=action.length;
+                while(actionLength-- != 0){
+                    tempFile.writeU8(romFile._u8array[sourceRelativeOffset]);
+                    sourceRelativeOffset++;
+                }
+            }else if(action.type==BPS_ACTION_TARGET_COPY){
+                targetRelativeOffset+=action.relativeOffset;
+                var actionLength=action.length;
+                while(actionLength-- != 0) {
+                    tempFile.writeU8(tempFile._u8array[targetRelativeOffset]);
+                    targetRelativeOffset++;
+                }
+            }
+        }
 
+        if(validate && this.targetChecksum!=crc32(tempFile)){
+            throw new Error("error_crc_output");
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return tempFile;
+    }
 
 
 
     public static BPS parseBPSFile(MarcFile file){
-        //file.readVLV=BPS_readVLV;
+
 
         file.littleEndian=true;
         var patch=new BPS();
@@ -183,9 +183,9 @@ public class BPS {
         patchFileSize+=12;
 
         MarcFile patchFile = new MarcFile(patchFileSize);
-//        patchFile.fileName=fileName+'.bps';
+
         patchFile.littleEndian=true;
-//        patchFile.writeVLV=BPS_writeVLV;
+
 
         patchFile.writeString(BPS_MAGIC);
         BPS_writeVLV(patchFile, this.sourceSize);
@@ -218,10 +218,6 @@ public class BPS {
                 this.next = null;
         }
     }
-
-
-
-
     public static BPS createBPSFromFiles(MarcFile original, MarcFile modified, boolean deltaMode) throws IOException {
         BPS patch=new BPS();
         patch.sourceSize = original.fileSize;

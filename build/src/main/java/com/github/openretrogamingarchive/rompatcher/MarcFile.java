@@ -84,8 +84,6 @@ public class MarcFile {
 
 
 
-
-
     public void seek(int offset){
         this.offset=offset;
     }
@@ -116,15 +114,16 @@ public class MarcFile {
 
 
 
+    public void copyToFile(MarcFile target, int offsetSource, Integer len, Integer offsetTarget){
+        if(offsetTarget==null)
+            offsetTarget=offsetSource;
+        if(len==null||len==0)
+            len=(this.fileSize-offsetSource);
 
-
-
-
-
-
-
-
-
+        for(var i=0; i<len; i++){
+            target._u8array[offsetTarget+i]=this._u8array[offsetSource+i];
+        }
+    }
 
 
     public void save(Path path) throws IOException {
@@ -134,7 +133,6 @@ public class MarcFile {
         }
         Files.write(path, bytes);
     }
-
 
 
 
@@ -183,6 +181,7 @@ public class MarcFile {
     }
 
 
+
     public List<Integer> readBytes(int len){
         this._lastRead=new ArrayList<Integer>(len);
         for(var i=0; i<len; i++){
@@ -201,47 +200,6 @@ public class MarcFile {
         this.offset+=len;
         return (String) this._lastRead;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public void writeU8(int u8){
         this._u8array[this.offset]=u8;

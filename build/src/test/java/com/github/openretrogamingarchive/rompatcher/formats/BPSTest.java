@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BPSTest {
     Path original = Path.of("test-data","3x3 Eyes - Juuma Houkan (Japan).sfc");
@@ -38,6 +39,21 @@ public class BPSTest {
 
         assertArrayEquals(expected, actual);
     }
+
+    @Test
+    public void testApplyLinear() throws Exception {
+        BPS bps = BPS.parseBPSFile(new MarcFile(linearPatch));
+
+        assertTrue(bps.validateSource(new MarcFile(original)));
+        MarcFile actualModified = bps.apply(new MarcFile(original), true);
+        Path actualModifiedPath = Path.of("modified");
+        actualModified.save(actualModifiedPath);
+
+        byte[] expected = Files.readAllBytes(modified);
+        byte[] actual = Files.readAllBytes(actualModifiedPath);
+
+        assertArrayEquals(expected, actual);
+    }
     @Test
     public void testCreateDelta() throws Exception {
         BPS bps = BPS.createBPSFromFiles(new MarcFile(original), new MarcFile(modified), true);
@@ -59,6 +75,20 @@ public class BPSTest {
 
         byte[] expected = Files.readAllBytes(deltaPatch);
         byte[] actual = Files.readAllBytes(testPath);
+
+        assertArrayEquals(expected, actual);
+    }
+    @Test
+    public void testApplyDelta() throws Exception {
+        BPS bps = BPS.parseBPSFile(new MarcFile(deltaPatch));
+
+        assertTrue(bps.validateSource(new MarcFile(original)));
+        MarcFile actualModified = bps.apply(new MarcFile(original), true);
+        Path actualModifiedPath = Path.of("modified");
+        actualModified.save(actualModifiedPath);
+
+        byte[] expected = Files.readAllBytes(modified);
+        byte[] actual = Files.readAllBytes(actualModifiedPath);
 
         assertArrayEquals(expected, actual);
     }
