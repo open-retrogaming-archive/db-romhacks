@@ -39,14 +39,17 @@ romhack.xml Example:
     <baseCRC>02A442B8</baseCRC>
     <patchCRC>2144DF1C</patchCRC>
     <finalCRC>EEC0F601</finalCRC>
-    <shortauthor>Bishoujo Senshi Translations</shortauthor>
-    <authors>Bishoujo Senshi Translations, mteam (mziab, vivify93, FuSoYa, Moose M., Lina`chan, Nuku-nuku, Cecil Stormclaw)</authors>
+    <author>Bishoujo Senshi Translations</author>
+    <url>https://www.romhacking.net/translations/4654/</url>
     <version>2.05</version>
     <releasedate>2020-06-05</releasedate>
     <status>Fully Playable</status>
     <notes>This is a complete English relocalization of Bishoujo Senshi Sailor Moon - Another Story, an RPG for the Super Famicom. Featured are several fixes to issues and bugs in the original game.</notes>
   </romhack>
 ```
+
+releasedate: SHOULD follow the pattern YYYY-MM-DD.
+status: One of the two 'Fully Playable' or 'Incomplete'.
 
 ## Optional Patches
 Some romhacks contain a myriad of optional patches, this projects prefers to normalize such options under a few curated ones released as different romhacks under the same game.
