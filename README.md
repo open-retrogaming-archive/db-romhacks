@@ -47,9 +47,8 @@ romhack.xml Example:
     <notes>This is a complete English relocalization of Bishoujo Senshi Sailor Moon - Another Story, an RPG for the Super Famicom. Featured are several fixes to issues and bugs in the original game.</notes>
   </romhack>
 ```
-
-releasedate: SHOULD follow the pattern YYYY-MM-DD.
-status: One of the two 'Fully Playable' or 'Incomplete'.
+- releasedate: SHOULD follow the pattern YYYY-MM-DD.
+- status: One of the two 'Fully Playable' or 'Incomplete'.
 
 ## Optional Patches
 Some romhacks contain a myriad of optional patches, this projects prefers to normalize such options under a few curated ones released as different romhacks under the same game.
